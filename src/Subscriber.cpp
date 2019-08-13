@@ -41,6 +41,7 @@
 #include <glog/logging.h>
 #include <okvis/Subscriber.hpp>
 #include <functional>
+#include <cv_bridge/cv_bridge.h>
 
 #define THRESHOLD_DATA_DELAY_WARNING 0.1 // in seconds
 
@@ -106,8 +107,7 @@ void Subscriber::imageCallback(const sensor_msgs::ImageConstPtr& msg,/*
  const sensor_msgs::CameraInfoConstPtr& info,*/
                                unsigned int cameraIndex)
 {
-  const cv::Mat raw(msg->height, msg->width, CV_8UC1,
-                    const_cast<uint8_t*>(&msg->data[0]), msg->step);
+  const cv::Mat raw = cv_bridge::toCvCopy(msg, "mono8")->image);
 
   cv::Mat filtered;
   if (vioParameters_.optimization.useMedianFilter) {
