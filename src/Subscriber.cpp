@@ -107,7 +107,7 @@ void Subscriber::imageCallback(const sensor_msgs::ImageConstPtr& msg,/*
  const sensor_msgs::CameraInfoConstPtr& info,*/
                                unsigned int cameraIndex)
 {
-  const cv::Mat raw = cv_bridge::toCvCopy(msg, "mono8")->image);
+  const cv::Mat raw = cv_bridge::toCvCopy(msg, "mono8")->image;
 
   cv::Mat filtered;
   if (vioParameters_.optimization.useMedianFilter) {

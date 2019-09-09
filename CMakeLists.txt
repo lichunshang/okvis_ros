@@ -24,7 +24,9 @@ catkin_package(
 )
 
 # we really want to use Release here
-set(CMAKE_BUILD_TYPE Release)
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
 
 message(STATUS "Building with ${CMAKE_BUILD_TYPE}")
 
@@ -90,6 +92,7 @@ if(VISENSORDRIVER_FOUND)
 endif()
 
 include_directories(
+  okvis/okvis_apps/include
   okvis/okvis_util/include
   okvis/okvis_kinematics/include
   okvis/okvis_time/include
@@ -109,4 +112,6 @@ add_executable(okvis_node_synchronous src/okvis_node_synchronous.cpp)
 target_link_libraries(okvis_node_synchronous ${PROJECT_NAME} )
 add_executable(dataset_convertor src/dataset_convertor.cpp)
 target_link_libraries(dataset_convertor ${PROJECT_NAME} )
+add_executable(okvis_node_synchronous_from_file src/okvis_node_synchronous_from_file.cpp)
+target_link_libraries(okvis_node_synchronous_from_file ${PROJECT_NAME} )
 

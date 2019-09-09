@@ -60,6 +60,7 @@
 #include <okvis/Publisher.hpp>
 #include <okvis/RosParametersReader.hpp>
 #include <okvis/ThreadedKFVio.hpp>
+#include <cv_bridge/cv_bridge.h>
 
 #include "rosbag/bag.h"
 #include "rosbag/chunked_file.h"
@@ -205,8 +206,9 @@ int main(int argc, char **argv) {
     for(size_t i=0; i<numCameras;++i) {
       sensor_msgs::ImageConstPtr msg1 = view_cam_iterators[i]
           ->instantiate<sensor_msgs::Image>();
-      cv::Mat filtered(msg1->height, msg1->width, CV_8UC1);
-      memcpy(filtered.data, &msg1->data[0], msg1->height * msg1->width);
+      // cv::Mat filtered(msg1->height, msg1->width, CV_8UC1);
+      // memcpy(filtered.data, &msg1->data[0], msg1->height * msg1->width);
+      cv::Mat filtered = cv_bridge::toCvCopy(msg1, "mono8")->image;
       t = okvis::Time(msg1->header.stamp.sec, msg1->header.stamp.nsec);
       if (start == okvis::Time(0.0)) {
         start = t;
