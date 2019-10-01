@@ -77,14 +77,14 @@ class Publisher
  public:
 
   /// \brief Default constructor.
-  Publisher();
+  Publisher(bool publish_and_write_csv = false);
   ~Publisher();
 
   /**
    * @brief Constructor. Calls setNodeHandle().
    * @param nh The ROS node handle for publishing.
    */
-  Publisher(ros::NodeHandle& nh);
+  Publisher(ros::NodeHandle& nh, bool publish_and_write_csv = false);
 
   /// \name Setters
   /// \{
@@ -302,6 +302,7 @@ class Publisher
 
   uint32_t ctr2_; ///< The counter for the amount of transferred points. Used for the seq parameter in the header.
 
+  bool publish_and_write_csv_;
   std::shared_ptr<std::fstream> csvFile_; ///< CSV file to save state in.
   std::shared_ptr<std::fstream> csvLandmarksFile_;  ///< CSV file to save landmarks in.
 
