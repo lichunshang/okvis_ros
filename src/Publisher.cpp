@@ -53,9 +53,10 @@
 namespace okvis {
 
 // Default constructor.
-Publisher::Publisher()
+Publisher::Publisher(bool publish_and_write_csv)
     : nh_(nullptr),
-      ctr2_(0)
+      ctr2_(0),
+      publish_and_write_csv_(publish_and_write_csv)
 {
 }
 
@@ -80,8 +81,8 @@ Publisher::~Publisher()
 }
 
 // Constructor. Calls setNodeHandle().
-Publisher::Publisher(ros::NodeHandle& nh)
-    : Publisher()
+Publisher::Publisher(ros::NodeHandle& nh, bool publish_and_write_csv)
+    : Publisher(publish_and_write_csv)
 {
   setNodeHandle(nh);
 }
@@ -120,7 +121,7 @@ bool Publisher::writeCsvDescription()
     return false;
   if (!csvFile_->good())
     return false;
-  *csvFile_ << "timestamp" << ", " << "p_WS_W_x" << ", " << "p_WS_W_y" << ", "
+  *csvFile_ << "# timestamp" << ", " << "p_WS_W_x" << ", " << "p_WS_W_y" << ", "
             << "p_WS_W_z" << ", " << "q_WS_x" << ", " << "q_WS_y" << ", "
             << "q_WS_z" << ", " << "q_WS_w" << ", " << "v_WS_W_x" << ", "
             << "v_WS_W_y" << ", " << "v_WS_W_z" << ", " << "b_g_x" << ", "
@@ -509,6 +510,10 @@ void Publisher::publishFullStateAsCallback(
   publishOdometry();
   publishTransform();
   publishPath();
+
+  if (publish_and_write_csv_) {
+    csvSaveFullStateAsCallback(t, T_WS, speedAndBiases, omega_S);
+  }
 }
 
 // Set and write full state to CSV file.
@@ -585,6 +590,9 @@ void Publisher::publishLandmarksAsCallback(
     okvis::MapPointVector empty;
     setPoints(actualLandmarks, empty, transferredLandmarks);
     publishPoints();
+  }
+  if (publish_and_write_csv_) {
+    csvSaveLandmarksAsCallback(okvis::Time(0), actualLandmarks, transferredLandmarks);
   }
 }
 

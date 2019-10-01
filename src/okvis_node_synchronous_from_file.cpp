@@ -42,27 +42,6 @@
  * @author Andreas Forster
  */
 
-// #include <iostream>
-// #include <fstream>
-// #include <stdlib.h>
-// #include <memory>
-// #include <functional>
-// #include <atomic>
-
-// #include <Eigen/Core>
-// #include <ros/ros.h>
-
-// #pragma GCC diagnostic push
-// #pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
-// #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-// #include <opencv2/opencv.hpp>
-// #pragma GCC diagnostic pop
-// #include <okvis/VioParametersReader.hpp>
-// #include <okvis/ThreadedKFVio.hpp>
-// #include <okvis/Publisher.hpp>
-
-// #include <boost/filesystem.hpp>
-
 #include <ros/ros.h>
 #include <okvis/Publisher.hpp>
 #include "okvis_app_synchronous_fn.hpp"
@@ -84,7 +63,7 @@ int main(int argc, char **argv){
   ros::NodeHandle nh("okvis_node");
 
   // publisher
-  okvis::Publisher publisher(nh);
+  okvis::Publisher publisher(nh, true);
 
   okvis::Duration deltaT(0.0);
   if (argc == 4) {
@@ -95,6 +74,9 @@ int main(int argc, char **argv){
   std::string configFilename(argv[1]);
   // the folder path
   std::string path(argv[2]);
+
+  publisher.setCsvFile(path + "/okvis_estimator_output.csv");
+  publisher.setLandmarksCsvFile(path + "/okvis_estimator_landmarks.csv");
 
   auto ros_check = []() {
       if (!ros::ok()) {
