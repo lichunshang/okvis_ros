@@ -1,0 +1,12 @@
+<launch>
+  <arg name="config_path" default="$(find okvis_ros)/okvis/config/uzh_fpv_indoor_forward.yaml" />  
+  <node name="okvis_node" pkg="okvis_ros" type="okvis_node" output="screen">
+    <param name="config_filename" value="$(arg config_path)" />
+    <!-- <param name="mesh_file" value="firefly.dae" /> -->
+    <remap to="/snappy_cam/stereo_l" from="/camera0" />
+    <remap to="/snappy_cam/stereo_r" from="/camera1" />
+    <!-- <remap from="/calibration0" to="/cam0/calibration" />
+    <remap from="/calibration1" to="/cam1/calibration" /> -->
+    <remap to="/snappy_imu" from="/imu" />
+  </node>
+</launch>
