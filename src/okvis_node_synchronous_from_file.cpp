@@ -4,7 +4,7 @@
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are met:
- * 
+ *
  *   * Redistributions of source code must retain the above copyright notice,
  *     this list of conditions and the following disclaimer.
  *   * Redistributions in binary form must reproduce the above copyright notice,
@@ -34,7 +34,7 @@
 /**
  * @file okvis_app_synchronous.cpp
  * @brief This file processes a dataset.
- 
+
  This node goes through a dataset in order and waits until all processing is done
  before adding a new message to algorithm
 
@@ -46,7 +46,7 @@
 #include <okvis/Publisher.hpp>
 #include "okvis_app_synchronous_fn.hpp"
 
-int main(int argc, char **argv){
+int main(int argc, char **argv) {
   ros::init(argc, argv, "okvis_node_synchronous");
 
   google::InitGoogleLogging(argv[0]);
@@ -54,8 +54,7 @@ int main(int argc, char **argv){
   FLAGS_colorlogtostderr = 1;
 
   if (argc != 3 && argc != 4) {
-    LOG(ERROR)<<
-    "Usage: ./" << argv[0] << " configuration-yaml-file dataset-folder [skip-first-seconds]";
+    LOG(ERROR) << "Usage: ./" << argv[0] << " configuration-yaml-file dataset-folder [skip-first-seconds]";
     return -1;
   }
 
@@ -75,20 +74,30 @@ int main(int argc, char **argv){
   // the folder path
   std::string path(argv[2]);
 
+  okvis::VioParametersReader vio_parameters_reader(configFilename);
+  okvis::VioParameters parameters;
+  vio_parameters_reader.getParameters(parameters);
+
   publisher.setCsvFile(path + "/okvis_estimator_output.csv");
   publisher.setLandmarksCsvFile(path + "/okvis_estimator_landmarks.csv");
+  publisher.setParameters(parameters);
 
   auto ros_check = []() {
-      if (!ros::ok()) {
-        return false;
-      }
-      return true;
+    if (!ros::ok()) {
+      return false;
+    }
+    return true;
   };
 
-  return app_fn(path, configFilename, deltaT, 
-    boost::optional<okvis::VioInterface::StateCallback>(std::bind(&okvis::Publisher::publishStateAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2)), 
-    boost::optional<okvis::VioInterface::FullStateCallback>(std::bind(&okvis::Publisher::publishFullStateAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4)), 
-    boost::optional<okvis::VioInterface::LandmarksCallback>(std::bind(&okvis::Publisher::publishLandmarksAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3)), 
-    boost::optional<std::function<void()>>(), 
-    boost::optional<std::function<bool()>>(ros_check));
+  return app_fn(
+      path, parameters, deltaT,
+      boost::optional<okvis::VioInterface::StateCallback>(std::bind(
+          &okvis::Publisher::publishStateAsCallback, &publisher, std::placeholders::_1, std::placeholders::_2)),
+      boost::optional<okvis::VioInterface::FullStateCallback>(
+          std::bind(&okvis::Publisher::publishFullStateAsCallback, &publisher, std::placeholders::_1,
+                    std::placeholders::_2, std::placeholders::_3, std::placeholders::_4)),
+      boost::optional<okvis::VioInterface::LandmarksCallback>(std::bind(&okvis::Publisher::publishLandmarksAsCallback,
+                                                                        &publisher, std::placeholders::_1,
+                                                                        std::placeholders::_2, std::placeholders::_3)),
+      boost::optional<std::function<void()>>(), boost::optional<std::function<bool()>>(ros_check));
 }

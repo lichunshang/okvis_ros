@@ -89,6 +89,7 @@ int main(int argc, char **argv)
   okvis_estimator.setLandmarksCallback(std::bind(&okvis::Publisher::publishLandmarksAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3));
   okvis_estimator.setStateCallback(std::bind(&okvis::Publisher::publishStateAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2));
   publisher.setParameters(parameters); // pass the specified publishing stuff
+  publisher.setCsvFile("/home/cs4li/Dev/dump/okvis_estimator_output.csv");
 
   // subscriber
   okvis::Subscriber subscriber(nh, &okvis_estimator, vio_parameters_reader);

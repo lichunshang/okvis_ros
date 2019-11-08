@@ -710,6 +710,23 @@ void Publisher::publishImages()
 void Publisher::publishPath()
 {
   pubPath_.publish(path_);
+  // int head_sz = 50;
+  // int downsample_rate = (static_cast<int> (path_.poses.size()) - head_sz) / 10000;
+  // if (downsample_rate <= 0) {
+  //   pubPath_.publish(path_);
+  // } else {
+  //   nav_msgs::Path path_downsampled;
+  //   path_downsampled.header = path_.header;
+  //   unsigned int i;
+  //   for (i = 0; i < path_.poses.size() - head_sz; i+=(downsample_rate + 1)) {
+  //     path_downsampled.poses.push_back(path_.poses[i]);
+  //   }
+
+  //   for (i; i < path_.poses.size(); i++) {
+  //     path_downsampled.poses.push_back(path_.poses[i]);
+  //   }
+  //   pubPath_.publish(path_downsampled);
+  // }
 }
 
 }  // namespace okvis
