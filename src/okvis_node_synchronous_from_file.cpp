@@ -78,8 +78,9 @@ int main(int argc, char **argv) {
   okvis::VioParameters parameters;
   vio_parameters_reader.getParameters(parameters);
 
-  publisher.setCsvFile(path + "/okvis_estimator_output.csv");
-  publisher.setLandmarksCsvFile(path + "/okvis_estimator_landmarks.csv");
+  // publisher.setCsvFile(path + "/okvis_estimator_output.csv");
+  // publisher.setLandmarksCsvFile(path + "/okvis_estimator_landmarks.csv");
+  publisher.setCsvFile("/home/cs4li/Dev/dump/okvis_estimator_output.csv");
   publisher.setParameters(parameters);
 
   auto ros_check = []() {

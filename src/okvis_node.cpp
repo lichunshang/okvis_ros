@@ -71,7 +71,7 @@ int main(int argc, char **argv)
   FLAGS_colorlogtostderr = 1;
 
   // publisher
-  okvis::Publisher publisher(nh);
+  okvis::Publisher publisher(nh, true);
 
   // read configuration file
   std::string configFilename;
@@ -82,14 +82,14 @@ int main(int argc, char **argv)
   okvis::RosParametersReader vio_parameters_reader(configFilename);
   okvis::VioParameters parameters;
   vio_parameters_reader.getParameters(parameters);
+  publisher.setCsvFile("/home/cs4li/Dev/dump/okvis_estimator_output.csv");
+  publisher.setParameters(parameters); // pass the specified publishing stuff
 
   okvis::ThreadedKFVio okvis_estimator(parameters);
 
   okvis_estimator.setFullStateCallback(std::bind(&okvis::Publisher::publishFullStateAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3,std::placeholders::_4));
   okvis_estimator.setLandmarksCallback(std::bind(&okvis::Publisher::publishLandmarksAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3));
   okvis_estimator.setStateCallback(std::bind(&okvis::Publisher::publishStateAsCallback,&publisher,std::placeholders::_1,std::placeholders::_2));
-  publisher.setParameters(parameters); // pass the specified publishing stuff
-  publisher.setCsvFile("/home/cs4li/Dev/dump/okvis_estimator_output.csv");
 
   // subscriber
   okvis::Subscriber subscriber(nh, &okvis_estimator, vio_parameters_reader);
